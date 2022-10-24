@@ -5,6 +5,9 @@ import pyautogui as pag
 from ..data_classes.templates import Template_Enemy
 from ..data_classes.data_classes import Object_position
 from .finder import Finder
+from ..data_classes.templates import *
+class UI:
+    attack_the_enemy = Template_UI("assets/Templates/UI/attack_the_enemy.png")
 
 
 class Actions:

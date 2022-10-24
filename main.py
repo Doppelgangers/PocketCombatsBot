@@ -1,16 +1,17 @@
-import numpy
-import numpy as np
-import cv2
 import mss
 
-from modules.cv_and_actions import Window_manager
 from modules.cv_and_actions import *
-from modules.telegtam_bot import TelegramBot
 from modules.cv_and_actions.actions import *
+from modules.data_classes.templates import get_enemy
+from modules.settings import *
+
+
 
 
 def main_loop():
-    monitor_manager = Window_manager(window_name=Constants.WINDOW_NAME)
+    Enemies = get_enemy()
+
+    monitor_manager = Window_manager(window_name=WINDOW_NAME)
     with mss.mss() as screenshot:
         while "Screen capturing":
             img = np.asarray(screenshot.grab(monitor_manager.monitor))
@@ -19,7 +20,7 @@ def main_loop():
 
             actions = Actions(monitor_manager)
 
-            first = actions.find_and_attack(img_gray=img_gray, enemy=Enemies.forest_wolf)
+            first = actions.find_and_attack(img_gray=img_gray, enemy=Enemies.mini_wolf)
 
             cv2.imshow("BOT", img_gray)
 

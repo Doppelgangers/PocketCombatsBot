@@ -2,7 +2,7 @@ import os
 
 """PATHS"""
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATES_DIR = os.path.join(BASE_DIR, "assets", "Templates"  )
+TEMPLATES_DIR = os.path.join(BASE_DIR, "../assets", "Templates")
 ENEMIES_DIR = os.path.join(TEMPLATES_DIR, "Enemies")
 
 """WINDOW"""
