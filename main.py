@@ -2,14 +2,10 @@ import mss
 
 from modules.cv_and_actions import *
 from modules.cv_and_actions.actions import *
-from modules.data_classes.templates import get_enemy
-from modules.settings import *
-
-
+from modules.configs.settings import *
 
 
 def main_loop():
-    Enemies = get_enemy()
 
     monitor_manager = Window_manager(window_name=WINDOW_NAME)
     with mss.mss() as screenshot:
@@ -20,7 +16,7 @@ def main_loop():
 
             actions = Actions(monitor_manager)
 
-            first = actions.find_and_attack(img_gray=img_gray, enemy=Enemies.mini_wolf)
+            first = actions.find_and_attack(img_gray=img_gray, enemy=Enemies.wolf)
 
             cv2.imshow("BOT", img_gray)
 

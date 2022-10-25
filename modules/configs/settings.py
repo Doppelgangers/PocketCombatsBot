@@ -1,9 +1,10 @@
 import os
+import pathlib
 
 """PATHS"""
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATES_DIR = os.path.join(BASE_DIR, "../assets", "Templates")
-ENEMIES_DIR = os.path.join(TEMPLATES_DIR, "Enemies")
+BASE_DIR = pathlib.WindowsPath(os.path.dirname(os.path.abspath(__file__))).parents[1]
+TEMPLATES_DIR = os.path.join(BASE_DIR, "assets", "Templates")
+
 
 """WINDOW"""
 WINDOW_NAME = "BlueStacks"
