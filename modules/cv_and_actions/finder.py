@@ -1,18 +1,17 @@
 import cv2
 import numpy as np
 from ..data_classes.templates import *
-from ..data_classes.data_classes import *
+from ..data_classes.data_classes import Object_position
 
 
 class Finder:
 
     @staticmethod
-    def find_object(template: Template, img_gray, precision: float = 0.6, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
+    def find_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
         """
         Ищет на скиншоте объект по шаблону
         :param template: Шаблон по которому будем искать
         :param img_gray: чёрно-белый скриншот
-        :param precision: точность поиска
         :param method: метод cv2 для поиска по шаблону
         :param draw_rect_in_gray_img: Рисовать квадрат вокруг объекта?
         :return: координаты обекта или ничего
@@ -22,7 +21,7 @@ class Finder:
         width_template, height_template = template.img.shape[::-1]
 
         result = cv2.matchTemplate(img_gray, template.img, method)
-        location_of_matches = np.where(result >= precision)
+        location_of_matches = np.where(result >= template.precision)
 
         for pt in zip(*location_of_matches[::-1]):
 
@@ -41,12 +40,34 @@ class Finder:
         return position_find_object
 
     @staticmethod
-    def find_in_object(template, img_gray, y1, y2, precision: float = 0.6, draw_rect_in_gray_img: bool = False):
-        cut_img_gray = img_gray[y1:y2]
+    def cut_image(img_gray, x1=None, x2=None, y1=None, y2=None, object_position:Object_position = None):
+        if x1 or x2 or y1 or y1:
+            return img_gray[y1:y2, x1:x2]
+        if object_position:
+            return img_gray[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
 
-        local_position = Finder.find_object(template=template, img_gray=cut_img_gray, precision=precision,
+    @staticmethod
+    def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False):
+
+        cut_img_gray = Finder.cut_image(img_gray=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
+
+        local_position = Finder.find_object(template=template, img_gray=cut_img_gray,
                                             draw_rect_in_gray_img=draw_rect_in_gray_img)
+
+        #TODO: Кажется тут могут быть ошибки с вычислениями если обрезать не только по координуте y,
+        # в плене координаты будут считаться не правильно
         if local_position:
-            local_position.y1 += y1
-            local_position.y2 += y1
+            if y1:
+                local_position.y1 += y1
+            if y2:
+                local_position.y2 += y1
+            if x1:
+                local_position.x1 += x1
+            if x2:
+                local_position.x2 += x1
             return local_position
+
+    @staticmethod
+    def find_and_cut_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
+        if position := Finder.find_object(template=template, img_gray=img_gray, method=method):
+            return Finder.cut_image(img_gray=img_gray, x1=position.x1, x2=position.x2, y1=position.y1, y2=position.y2)

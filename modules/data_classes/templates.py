@@ -24,6 +24,15 @@ class Template_Enemy(Template):
         self.name = name
 
 
+class Template_Skills(Template):
+
+    path_folder = os.path.join(TEMPLATES_DIR, "Skills")
+
+    def __init__(self, img, name: str, precision: float = 0.8, **kwargs):
+        super(Template_Skills, self).__init__(img=img, precision=precision)
+        self.name = name
+
+
 class Template_UI(Template):
 
     path_folder = os.path.join(TEMPLATES_DIR, "UI")
@@ -60,8 +69,11 @@ def get_templates(use_class) -> type:
             raise Exception(f"В папке {path_this_enemy} должен быть png шаблон, и json конфигурация!")
 
         with open(os.path.join(path_this_enemy, json_file), "r", encoding="utf-8") as f:
-            info_enemy = json.load(f)
-
+            try:
+                info_enemy = json.load(f)
+            except json.decoder.JSONDecodeError:
+                ex_text = f"В конфигурационном файле {path_this_enemy} обнаруженна ошибка!"
+                raise Exception(ex_text)
         info_enemy['img'] = os.path.join(path_this_enemy, png_file)
 
         list_templates[enemy] = use_class(**info_enemy)
@@ -71,3 +83,5 @@ def get_templates(use_class) -> type:
 
 Enemies = get_templates(Template_Enemy)
 UI = get_templates(Template_UI)
+Skills = get_templates(Template_Skills)
+
