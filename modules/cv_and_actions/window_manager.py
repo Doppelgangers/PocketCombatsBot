@@ -38,3 +38,10 @@ class Window_manager:
         if not window:
             raise Exception(f"Окна с именем '{window_name}' не найдено! ")
         return window.rect
+
+    def set_size_window(self):
+        ahk = AHK()
+        window = ahk.find_window_by_title(bytes(self.window_name, "utf-8"))
+        window.move(width=424, height=727)
+
+

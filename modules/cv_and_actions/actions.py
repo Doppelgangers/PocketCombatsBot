@@ -14,9 +14,14 @@ class Actions:
     def __init__(self, monitor_manager):
         self.monitor_manager = monitor_manager
 
-    @staticmethod
-    def click_to(x, y, click: bool = True):
-        pag.moveTo(x, y, 0.05)
+    def click_to(self, x, y, click: bool = True, relative_your_screen: bool = False):
+
+        if relative_your_screen:
+            x += self.monitor_manager.monitor.get("left")
+            y += self.monitor_manager.monitor.get("top")
+
+        pag.moveTo(x, y)
+
         if click:
             pag.mouseDown()
             time.sleep(random.randrange(31, 109) / 1000)
@@ -48,13 +53,26 @@ class Actions:
             if attack_position:
                 return attack_position
 
+    def get_a_position_relative_to_the_screen(self, position: Object_position):
+        left = self.monitor_manager.monitor.get("left")
+        top = self.monitor_manager.monitor.get("top")
+        position.y1 += top
+        position.y2 += top
+        position.x1 += left
+        position.x2 += left
+        return position
+
     def click_random_point_in_the_area(self, attack_position: Object_position):
         """
         Нажимает на кнопку атака в случйном месте
+        :param relative:
         :param attack_position: координаты поозиция кнопки атаки
         """
-        x = random.randint(attack_position.x1, attack_position.x2)
-        y = random.randint(attack_position.y1, attack_position.y2)
-        self.click_to(self.monitor_manager.monitor.get("left") + x, self.monitor_manager.monitor.get("top") + y)
+
+        attack_position_rel = self.get_a_position_relative_to_the_screen(attack_position)
+
+        x = random.randint(int(attack_position.x1), int(attack_position.x2))
+        y = random.randint(int(attack_position.y1), int(attack_position.y2))
+        self.click_to(x=x, y=y)
 
 
