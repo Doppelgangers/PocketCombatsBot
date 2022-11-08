@@ -27,9 +27,12 @@ class Fighter:
 
             for skill in skills_list:
 
-                if self.status_move(trys=2):
-                    self.use_skill(skill_template=skill)
-                    move += 1
+                trys = 20
+                while trys:
+                    if self.status_move(2):
+                        self.use_skill(skill_template=skill)
+                        move += 1
+                    trys -= 1
 
                 if self.fight_is_end():
                     return move
@@ -55,12 +58,13 @@ class Fighter:
             print("Не найдена кнопка атаки ")
             return None
 
-    def status_move(self, trys: int = 5):
+    def status_move(self, trys_find_atk: int = 5):
         """
         Если найдена кнопка возвращает её состояние , если кнопки нету тогда возвращает None
         :return: bool стутус хода и его позицию ObjectPosition()
         """
-        if position_btn_attack := self.find_btn_attack(trys=trys):
+
+        if position_btn_attack := self.find_btn_attack(trys=trys_find_atk):
 
             img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

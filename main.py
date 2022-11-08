@@ -20,13 +20,16 @@ def main_loop():
     with mss.mss() as screenshot:
         while "BOT WORK":
 
-            fight = Fighter(monitor_manager=monitor_manager, screenshot=screenshot)
-
-            still_move = fight.fight([Skills.water_bolt, Skills.ice_vortex, Skills.mind_power, Skills.kick])
-            print("Враг убит за ", still_move, "ход")
-            time.sleep(1000)
-
-
+            for i in range(100):
+                pos = Object_position(x1=275, y1=357, x2=858, y2=748)
+                action = Actions(monitor_manager)
+                action.click_random_point_in_the_area(pos)
+            break
+            # fight = Fighter(monitor_manager=monitor_manager, screenshot=screenshot)
+            #
+            # still_move = fight.fight([Skills.water_bolt, Skills.ice_vortex, Skills.mind_power, Skills.kick])
+            # print("Враг убит за ", still_move, "ход")
+            # time.sleep(1000)
 
 
 if __name__ == "__main__":

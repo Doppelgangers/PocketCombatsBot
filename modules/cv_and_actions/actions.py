@@ -35,7 +35,7 @@ class Actions:
         :return:
         """
         if position_btn_attack := self.find_the_enemy_and_get_position_btn_attack(img_gray=img_gray, enemy=enemy):
-            self.click_random_point_in_the_area(position_btn_attack)
+            self.click_random_point_in_the_area(position_btn_attack, relative=True)
             return True
 
     @staticmethod
@@ -54,6 +54,13 @@ class Actions:
                 return attack_position
 
     def get_a_position_relative_to_the_screen(self, position: Object_position):
+        """
+        Приимсает Object_position модифицирует его и возвращает
+        координаты относитиельо монитора для дальнейшего использования
+        например для клика по элементу
+        :param position: Объект класса Object_position
+        :return: модифицированный объект с координатами относительно монитора
+        """
         left = self.monitor_manager.monitor.get("left")
         top = self.monitor_manager.monitor.get("top")
         position.y1 += top
@@ -62,17 +69,18 @@ class Actions:
         position.x2 += left
         return position
 
-    def click_random_point_in_the_area(self, attack_position: Object_position):
+    def click_random_point_in_the_area(self, position: Object_position, relative: bool = True, offset: int = 1):
         """
         Нажимает на кнопку атака в случйном месте
         :param relative:
-        :param attack_position: координаты поозиция кнопки атаки
+        :param offset:
+        :param position: координаты элемента
         """
+        if relative:
+            attack_position_rel = self.get_a_position_relative_to_the_screen(position)
 
-        attack_position_rel = self.get_a_position_relative_to_the_screen(attack_position)
-
-        x = random.randint(int(attack_position.x1), int(attack_position.x2))
-        y = random.randint(int(attack_position.y1), int(attack_position.y2))
+        x = random.randint(position.x1+offset, position.x2-offset)
+        y = random.randint(position.y1+offset, position.y2-offset)
         self.click_to(x=x, y=y)
 
 
