@@ -20,23 +20,6 @@ class Fighter:
 
         self.actions = Actions(monitor_manager=monitor_manager)
 
-    def fight(self, skills_list: list = []):
-        move = 0
-        self.open_skills()
-        while True:
-
-            for skill in skills_list:
-
-                trys = 20
-                while trys:
-                    if self.status_move(2):
-                        self.use_skill(skill_template=skill)
-                        move += 1
-                    trys -= 1
-
-                if self.fight_is_end():
-                    return move
-
     def find_btn_attack(self, trys: int = 5):
         """
         Ищет позицию кнопки атаки
@@ -100,22 +83,26 @@ class Fighter:
             return True
         return False
 
-    def try_find_element(self, template, trys: int = 5):
+    def try_find_element(self, template, wait_seconds: int = 5):
+        """
+        Попытка найти объект
+        :param wait_seconds:
+        :param template: Шаблон искомого объкта
+        :return: позиция объекта или None
+        """
+        start_time = time.perf_counter()
 
-        while trys:
-            print("Ищю ")
+        while time.perf_counter()-start_time < wait_seconds:
+
             img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             if pos := self.finder.find_object(template=template, img_gray=img_gray):
                 return pos
-
-            trys -= 1
-            time.sleep(0.9)
         else:
             return None
 
-    def use_skill(self, skill_template: Template_Skills, trys: int = 3):
+    def click_skill(self, skill_template: Template_Skills, trys: int = 3):
         if pos := self.try_find_element(skill_template, trys=trys):
             self.actions.click_random_point_in_the_area(pos)
             return True
