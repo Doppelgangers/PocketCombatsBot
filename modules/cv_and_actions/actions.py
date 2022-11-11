@@ -11,8 +11,9 @@ from ..data_classes.templates import *
 
 class Actions:
 
-    def __init__(self, monitor_manager):
+    def __init__(self, monitor_manager, screenshot):
         self.monitor_manager = monitor_manager
+        self.screenshot = screenshot
 
     def click_to(self, x, y, click: bool = True, relative_your_screen: bool = False):
 
@@ -52,6 +53,7 @@ class Actions:
                                                     y1=enemy_position.y1, y2=enemy_position.y2, draw_rect_in_gray_img=True)
             if attack_position:
                 return attack_position
+        return None
 
     def get_a_position_relative_to_the_screen(self, position: Object_position):
         """

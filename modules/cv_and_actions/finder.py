@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import numpy as np
 from ..data_classes.templates import *
@@ -71,4 +73,3 @@ class Finder:
     def find_and_cut_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
         if position := Finder.find_object(template=template, img_gray=img_gray, method=method):
             return Finder.cut_image(img_gray=img_gray, x1=position.x1, x2=position.x2, y1=position.y1, y2=position.y2)
-
