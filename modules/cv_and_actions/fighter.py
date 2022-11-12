@@ -21,6 +21,28 @@ class Fighter:
 
         self.actions = Actions(monitor_manager=monitor_manager, screenshot=screenshot)
 
+    def fight_list_skills(self, skills: list[Template_Skills]):
+        time.sleep(1)
+        self.open_skills(wait=1)
+        fight = True
+        while fight:
+
+            for skill in skills:
+                wait_move = self.wait_move(20)
+
+                if type(wait_move) == bool:
+                    if wait_move:
+                        fight = False
+                        break
+                    else:
+                        raise Exception("Бой прерван")
+
+                if type(wait_move) == Object_position:
+                    time.sleep(0.2)
+                    if self.find_by_template_and_click_area(template=skill, wait=1):
+                        print(f"Использую {skill.name}")
+                    time.sleep(0.3)
+
     def find_btn_attack(self, wait: float = 1) -> Object_position | None:
         return self.try_find_element(template=Skills.kick, wait=wait)
 
@@ -52,9 +74,8 @@ class Fighter:
         else:
             return None, None
 
-    def wait_move(self, wait: float) -> bool or Object_position:
+    def wait_move(self, wait: float) -> bool | Object_position:
         """
-
         :param wait: Время ожидания конца хода
         :return:    {
                     True - сражение завершенно
@@ -109,6 +130,7 @@ class Fighter:
         :return: True or False , нажал на объект или нет.
         """
         if pos := self.try_find_element(template=template, wait=wait):
-            self.actions.click_random_point_in_the_area(pos)
+            print(pos)
+            self.actions.click_random_point_in_the_area(pos, relative=True, offset=2)
             return True
         return False

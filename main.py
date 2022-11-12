@@ -20,14 +20,21 @@ def main_loop():
     with mss.mss() as screenshot:
         while "BOT WORK":
 
-            fig = Fighter(screenshot=screenshot, monitor_manager=monitor_manager)
-            status = fig.wait_move(wait=25)
-            print(status)
-            if status:
-                break
+            test_fighter = Fighter(screenshot=screenshot, monitor_manager=monitor_manager)
 
+
+            skill_list = [
+                Skills.water_bolt,
+                Skills.ice_vortex,
+                Skills.mind_power,
+                Skills.kick
+                        ]
+
+            test_fighter.fight_list_skills(skill_list)
+            print("END")
+            exit()
 
 
 if __name__ == "__main__":
     main_loop()
-
+    print(Skills.__getattribute__())

@@ -28,7 +28,7 @@ class Actions:
             time.sleep(random.randrange(31, 83) / 1000)
             pag.mouseUp()
 
-    def attack_the_enemy(self, enemy: Template_Enemy, img_gray):
+    def attack_the_enemy(self, enemy: Template_Enemy, img_gray) -> bool:
         """
         Ищет врага на экране и если находит то атакует
         :param enemy:
@@ -38,6 +38,7 @@ class Actions:
         if position_btn_attack := self.find_the_enemy_and_get_position_btn_attack(img_gray=img_gray, enemy=enemy):
             self.click_random_point_in_the_area(position_btn_attack, relative=True)
             return True
+        return False
 
     @staticmethod
     def find_the_enemy_and_get_position_btn_attack(img_gray, enemy: Template_Enemy):
