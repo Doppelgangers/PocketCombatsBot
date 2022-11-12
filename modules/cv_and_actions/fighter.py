@@ -24,7 +24,7 @@ class Fighter:
     def find_btn_attack(self, wait: float = 1) -> Object_position | None:
         return self.try_find_element(template=Skills.kick, wait=wait)
 
-    def status_move(self, wait: float = 25) -> (bool, Object_position) or (None, None):
+    def status_move(self, wait: float = 1) -> (bool, Object_position) or (None, None):
         """
         :return: bool стутус хода и его позицию ObjectPosition()
         """
@@ -52,7 +52,32 @@ class Fighter:
         else:
             return None, None
 
-    def fight_is_end(self, wait: float = 4):
+    def wait_move(self, wait: float) -> bool or Object_position:
+        """
+
+        :param wait: Время ожидания конца хода
+        :return:    {
+                    True - сражение завершенно
+                    False - за время wait ход не стал доступен
+                    Object_position - координаты кнопки атаки
+                    }
+        """
+
+        start_time = time.perf_counter()
+        while time.perf_counter() - start_time < wait:
+            move_available, pos = self.status_move(wait=0.9)
+
+            if move_available is None:
+                if self.fight_is_end():
+                    return True
+
+            if move_available is not None:
+                if move_available:
+                    return pos
+
+        return False
+
+    def fight_is_end(self, wait: float = 4) -> bool:
         return self.find_by_template_and_click_area(template=UI.end_fight, wait=wait)
 
     def open_skills(self, wait: float = 0.5):

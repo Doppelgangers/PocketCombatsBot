@@ -25,7 +25,7 @@ class Actions:
 
         if click:
             pag.mouseDown()
-            time.sleep(random.randrange(31, 109) / 1000)
+            time.sleep(random.randrange(31, 83) / 1000)
             pag.mouseUp()
 
     def attack_the_enemy(self, enemy: Template_Enemy, img_gray):

@@ -19,8 +19,15 @@ def main_loop():
 
     with mss.mss() as screenshot:
         while "BOT WORK":
-            ...
+
+            fig = Fighter(screenshot=screenshot, monitor_manager=monitor_manager)
+            status = fig.wait_move(wait=25)
+            print(status)
+            if status:
+                break
+
 
 
 if __name__ == "__main__":
     main_loop()
+
