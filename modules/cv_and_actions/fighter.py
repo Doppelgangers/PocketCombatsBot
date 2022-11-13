@@ -5,9 +5,9 @@ import cv2
 import numpy as np
 
 from .window_manager import Window_manager
-from .finder import Finder
+from .basefinder import BaseFinder
 from ..data_classes.templates import Skills, UI, Template_Skills, Template_UI, Template_Enemy, Template
-from .actions import Actions
+from .baseactions import BaseActions
 from ..data_classes.data_classes import Object_position
 
 
@@ -17,23 +17,32 @@ class Fighter:
         self.monitor_manager = monitor_manager
         self.screenshot = screenshot
 
-        self.finder = Finder()
+        self.finder = BaseFinder()
 
-        self.actions = Actions(monitor_manager=monitor_manager, screenshot=screenshot)
+        self.actions = BaseActions(monitor_manager=monitor_manager, screenshot=screenshot)
 
-    def fight_list_skills(self, skills: list[Template_Skills]):
-        time.sleep(1)
+    def fight_list_skills(self, skills: list[Template_Skills]) -> str:
+        """
+        Сражение с чередаванием заранее определённых скилов
+        :param skills: Список объектов с умениями
+        :param is_open_skills: Нужно ли открывать панель с навыками
+        :return:
+        fight_is_not_found - бой не был найден, возможно его не начали
+        fight_is_end вы завершили сражение порожением или победой
+        """
+        if not self.actions.try_find_element(template=Skills.kick, wait=1):
+            return "fight_is_not_found"
+
         self.open_skills(wait=1)
-        fight = True
-        while fight:
+
+        while "FIGHT!":
 
             for skill in skills:
                 wait_move = self.wait_move(20)
 
                 if type(wait_move) == bool:
                     if wait_move:
-                        fight = False
-                        break
+                        return "fight_is_end"
                     else:
                         raise Exception("Бой прерван")
 
@@ -44,7 +53,7 @@ class Fighter:
                     time.sleep(0.3)
 
     def find_btn_attack(self, wait: float = 1) -> Object_position | None:
-        return self.try_find_element(template=Skills.kick, wait=wait)
+        return self.actions.try_find_element(template=Skills.kick, wait=wait)
 
     def status_move(self, wait: float = 1) -> (bool, Object_position) or (None, None):
         """
@@ -104,24 +113,6 @@ class Fighter:
     def open_skills(self, wait: float = 0.5):
         return self.find_by_template_and_click_area(template=UI.skills_panel, wait=wait)
 
-    def try_find_element(self, template, wait: float = 1) -> Object_position | None:
-        """
-        Попытка найти объект
-        :param wait: количество секунд поиска
-        :param template: Шаблон искомого объкта
-        :return: позиция объекта или None
-        """
-        start_time = time.perf_counter()
-
-        while time.perf_counter()-start_time < wait:
-            img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
-            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-            if pos := self.finder.find_object(template=template, img_gray=img_gray):
-                return pos
-        else:
-            return None
-
     def find_by_template_and_click_area(self, template: Template, wait: float = 0.5) -> bool:
         """
         Ищет объект по шаблону и нажимает в случайную точку в его области
@@ -129,7 +120,7 @@ class Fighter:
         :param wait: время поиска объекта
         :return: True or False , нажал на объект или нет.
         """
-        if pos := self.try_find_element(template=template, wait=wait):
+        if pos := self.actions.try_find_element(template=template, wait=wait):
             print(pos)
             self.actions.click_random_point_in_the_area(pos, relative=True, offset=2)
             return True

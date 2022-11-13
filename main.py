@@ -3,11 +3,11 @@ import time
 import cv2
 import mss
 
-from modules.cv_and_actions import *
-from modules.cv_and_actions import Actions
-from modules.cv_and_actions.actions import *
+
+from modules.cv_and_actions import MenuActions
 from modules.configs.settings import *
 from modules.cv_and_actions.fighter import *
+from modules.data_classes.templates import Enemies
 
 
 def main_loop():
@@ -20,17 +20,15 @@ def main_loop():
     with mss.mss() as screenshot:
         while "BOT WORK":
 
+            menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
             test_fighter = Fighter(screenshot=screenshot, monitor_manager=monitor_manager)
+            skill_list = [Skills.kick]
 
+            img = np.asarray(screenshot.grab(monitor_manager.monitor))
+            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            print(menu.attack_the_enemy(img_gray=img_gray, enemy=Enemies.wolf))
 
-            skill_list = [
-                Skills.water_bolt,
-                Skills.ice_vortex,
-                Skills.mind_power,
-                Skills.kick
-                        ]
-
-            test_fighter.fight_list_skills(skill_list)
+            print(test_fighter.fight_list_skills(skill_list))
             print("END")
             exit()
 

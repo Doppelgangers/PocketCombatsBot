@@ -6,7 +6,7 @@ from ..data_classes.templates import *
 from ..data_classes.data_classes import Object_position
 
 
-class Finder:
+class BaseFinder:
 
     @staticmethod
     def find_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
@@ -51,10 +51,10 @@ class Finder:
     @staticmethod
     def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False):
 
-        cut_img_gray = Finder.cut_image(img_gray=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
+        cut_img_gray = BaseFinder.cut_image(img_gray=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
 
-        local_position = Finder.find_object(template=template, img_gray=cut_img_gray,
-                                            draw_rect_in_gray_img=draw_rect_in_gray_img)
+        local_position = BaseFinder.find_object(template=template, img_gray=cut_img_gray,
+                                                draw_rect_in_gray_img=draw_rect_in_gray_img)
 
         #TODO: Кажется тут могут быть ошибки с вычислениями если обрезать не только по координуте y,
         # в плене координаты будут считаться не правильно
@@ -71,5 +71,5 @@ class Finder:
 
     @staticmethod
     def find_and_cut_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
-        if position := Finder.find_object(template=template, img_gray=img_gray, method=method):
-            return Finder.cut_image(img_gray=img_gray, x1=position.x1, x2=position.x2, y1=position.y1, y2=position.y2)
+        if position := BaseFinder.find_object(template=template, img_gray=img_gray, method=method):
+            return BaseFinder.cut_image(img_gray=img_gray, x1=position.x1, x2=position.x2, y1=position.y1, y2=position.y2)
