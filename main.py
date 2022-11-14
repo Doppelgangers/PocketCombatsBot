@@ -20,19 +20,16 @@ def main_loop():
     with mss.mss() as screenshot:
         while "BOT WORK":
 
+            obp = Object_position(x1=1171, y1=281, x2=1511, y2=720)
+
             menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
-            test_fighter = Fighter(screenshot=screenshot, monitor_manager=monitor_manager)
-            skill_list = [Skills.kick]
+            menu.scrolling_mouse(distance=40, speed=0.16, scrolling_area=obp)
 
-            img = np.asarray(screenshot.grab(monitor_manager.monitor))
-            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            print(menu.attack_the_enemy(img_gray=img_gray, enemy=Enemies.wolf))
 
-            print(test_fighter.fight_list_skills(skill_list))
             print("END")
             exit()
 
 
 if __name__ == "__main__":
     main_loop()
-    print(Skills.__getattribute__())
+

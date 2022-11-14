@@ -73,3 +73,21 @@ class BaseActions:
                 return pos
         else:
             return None
+
+    @staticmethod
+    def scrolling_mouse(distance: int, scrolling_area: Object_position, speed: float = 0.2, distance_is_percent: bool = False):
+        """
+
+        :param distance: Растояник прокрутки в px
+        :param speed: Скорость прокрутки (в секундаж)
+        :param scrolling_area: Область прокрутки
+        :param distance_is_percent: Растояник прокрутки будет в процентах относительно размеров scrolling_area
+        :return: None
+        """
+        pag.moveTo(scrolling_area.x1, scrolling_area.y2)
+        pag.mouseDown()
+        speed = random.uniform(speed-0.05, speed+0.05)
+        print(speed)
+        pag.moveTo(scrolling_area.x1, scrolling_area.y1, speed)
+        pag.mouseUp()
+
