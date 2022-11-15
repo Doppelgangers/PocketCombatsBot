@@ -25,7 +25,7 @@ class Object_position:
 
     def min_y(self):
         return self.y1 if self.y1 < self.y2 else self.y2
-    
+
     def get_angle_coordinates(self, corner: str = "lt") -> list[int, int]:
         """
         Получить координаты угла

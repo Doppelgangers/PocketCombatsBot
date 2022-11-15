@@ -75,19 +75,45 @@ class BaseActions:
             return None
 
     @staticmethod
-    def scrolling_mouse(distance: int, scrolling_area: Object_position, speed: float = 0.2, distance_is_percent: bool = False):
+    def scrolling_mouse(x1: int, y1: int, x2: int, y2: int, speed: float = 0.16):
         """
 
-        :param distance: Растояник прокрутки в px
-        :param speed: Скорость прокрутки (в секундаж)
-        :param scrolling_area: Область прокрутки
-        :param distance_is_percent: Растояник прокрутки будет в процентах относительно размеров scrolling_area
+        :param x1: Начальная координата по оси x
+        :param y1: Начальная координата по оси y
+        :param y2: Конечная координата по оси x
+        :param x2: Конечная координата по оси y
+        :param speed: Скорость прокрутки (в секундаж) >= 0.2 sec
         :return: None
         """
-        pag.moveTo(scrolling_area.x1, scrolling_area.y2)
+        pag.moveTo(x1, y1)
         pag.mouseDown()
         speed = random.uniform(speed-0.05, speed+0.05)
-        print(speed)
-        pag.moveTo(scrolling_area.x1, scrolling_area.y1, speed)
+        pag.moveTo(x2, y2, speed)
         pag.mouseUp()
 
+    @staticmethod
+    def scrolling_mouse_for_area(area: Object_position, scroll_to: str = "down", speed: float = 0.16):
+        """
+
+        :param area:
+        :param speed:
+        :param scroll_to: Направление прокрутки up or down
+        :return: None
+        """
+
+        start_x = random.randint(area.min_x(), area.max_x()-20) #случайная область по координате X
+        start_y = random.randint(area.max_y()-20, area.max_y()) # нижняя область с погрешностью 20px вверх
+
+        end_x = start_x # относительно базовой точки прибавляем процентно пикселей вправо
+        end_y = random.randint(area.min_y(), area.min_y() + 20)
+
+        match scroll_to:
+            case "up":
+                start_x, end_x = end_x, start_x
+                start_y, end_y = end_y, start_y
+            case "down":
+                pass
+            case _:
+                raise KeyError("Аргумент " + scroll_to + " не предусмотрен.")
+
+        BaseActions.scrolling_mouse(x1=start_x, y1=start_y, x2=end_x, y2=end_y, speed=speed)
