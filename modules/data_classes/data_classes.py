@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from ..cv_and_actions.window_manager import Window_manager
 
 
 @dataclass
@@ -53,3 +54,34 @@ class Object_position:
             case _:
                 raise KeyError("Аргумент " + corner + " не предусмотрен.")
         return [x, y]
+
+    def convert_position_local_to_global(self, monitor_manager: Window_manager):
+        """
+        Приимсает Object_position модифицирует его и возвращает
+        координаты относитиельо монитора для дальнейшего использования
+        например для клика по элементу
+        :param monitor_manager:
+        :param position: Объект класса Object_position
+
+        """
+        left = monitor_manager.left
+        top = monitor_manager.top
+        self.y1 += top
+        self.y2 += top
+        self.x1 += left
+        self.x2 += left
+
+    def convert_position_global_to_local(self, monitor_manager: Window_manager):
+        """
+        Приимсает Object_position модифицирует его и возвращает
+        координаты относитиельо монитора для дальнейшего использования
+        например для клика по элементу
+        :param monitor_manager:
+        """
+        left = monitor_manager.left
+        top = monitor_manager.top
+        self.y1 -= top
+        self.y2 -= top
+        self.x1 -= left
+        self.x2 -= left
+

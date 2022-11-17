@@ -7,11 +7,12 @@ import pyautogui as pag
 from ..data_classes.data_classes import Object_position
 from .basefinder import BaseFinder
 from ..data_classes.templates import *
+from .window_manager import Window_manager
 
 
 class BaseActions:
 
-    def __init__(self, monitor_manager, screenshot):
+    def __init__(self, monitor_manager: Window_manager, screenshot):
         self.monitor_manager = monitor_manager
         self.screenshot = screenshot
         self.finder = BaseFinder()
@@ -28,22 +29,6 @@ class BaseActions:
             pag.mouseDown()
             time.sleep(random.randrange(31, 83) / 1000)
             pag.mouseUp()
-
-    def get_a_position_relative_to_the_screen(self, position: Object_position):
-        """
-        Приимсает Object_position модифицирует его и возвращает
-        координаты относитиельо монитора для дальнейшего использования
-        например для клика по элементу
-        :param position: Объект класса Object_position
-        :return: модифицированный объект с координатами относительно монитора
-        """
-        left = self.monitor_manager.monitor.get("left")
-        top = self.monitor_manager.monitor.get("top")
-        position.y1 += top
-        position.y2 += top
-        position.x1 += left
-        position.x2 += left
-        return position
 
     def click_random_point_in_the_area(self, position: Object_position, relative: bool = True, offset: int = 1):
         """

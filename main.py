@@ -23,12 +23,7 @@ def main_loop():
 
             menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
 
-            obp = Object_position(x1=1297, y1=443, x2=1484, y2=787)
 
-            for i in range(3):
-                menu.scrolling_mouse_for_area(obp, "down", speed=0.18)
-
-            # menu.scrolling_mouse(x1=1171, y1=281, x2=1511, y2=720, speed=0.16)
 
             print("END")
             exit()
