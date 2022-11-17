@@ -1,6 +1,7 @@
 import random
 import time
 
+import ahk
 import cv2
 import mss
 
@@ -15,15 +16,16 @@ def main_loop():
 
     monitor_manager = Window_manager(window_name=WINDOW_NAME)
     if monitor_manager.width != 424 and monitor_manager.height != 727:
-        monitor_manager.set_size_window()
-        monitor_manager.update()
+        monitor_manager.set_size_window(width=424, height=727)
 
     with mss.mss() as screenshot:
         while "BOT WORK":
 
             menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
+            fighter_men = Fighter(monitor_manager, screenshot)
 
-
+            if menu.find_fight(Enemies.wolf, 10):
+                fighter_men.fight_list_skills([Skills.kick])
 
             print("END")
             exit()
@@ -31,4 +33,5 @@ def main_loop():
 
 if __name__ == "__main__":
     main_loop()
+
 

@@ -102,3 +102,4 @@ class BaseActions:
                 raise KeyError("Аргумент " + scroll_to + " не предусмотрен.")
 
         BaseActions.scrolling_mouse(x1=start_x, y1=start_y, x2=end_x, y2=end_y, speed=speed)
+
