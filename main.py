@@ -19,19 +19,19 @@ def main_loop():
         monitor_manager.set_size_window(width=424, height=727)
 
     with mss.mss() as screenshot:
-        while "BOT WORK":
+        menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
+        fighter_men = Fighter(monitor_manager, screenshot)
+        for i in range(3):
 
-            menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
-            fighter_men = Fighter(monitor_manager, screenshot)
-
-            if menu.find_fight(Enemies.wolf, 10):
+            if menu.find_fight(Enemies.wolf, 5):
                 fighter_men.fight_list_skills([Skills.kick])
 
             print("END")
-            exit()
+
 
 
 if __name__ == "__main__":
-    main_loop()
+
+        main_loop()
 
 

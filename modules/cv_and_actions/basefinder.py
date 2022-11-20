@@ -42,7 +42,7 @@ class BaseFinder:
         return position_find_object
 
     @staticmethod
-    def cut_image(img_gray, x1=None, x2=None, y1=None, y2=None, object_position:Object_position = None):
+    def cut_image(img_gray, x1=None, x2=None, y1=None, y2=None, object_position: Object_position = None):
         if x1 or x2 or y1 or y1:
             return img_gray[y1:y2, x1:x2]
         if object_position:
