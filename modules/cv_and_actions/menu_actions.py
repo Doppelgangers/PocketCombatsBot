@@ -59,23 +59,24 @@ class MenuActions(BaseActions):
 
     def find_fight(self, enemy: Template_Enemy, wait: int) -> bool:
         start_time = time.perf_counter()
-
-        while time.perf_counter() - start_time < wait:
+        cooldown = False
+        while time.perf_counter() - start_time < wait or cooldown:
 
             img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             atk = self.attack_the_enemy(enemy=enemy, img_gray=img_gray)
-
+            print(self.take_loot())
             print(atk)
             if atk == "cooldown":
-                wait += 1
-                time.sleep(1)
-                print(wait)
+                cooldown = True
             elif atk:
                 return True
             else:
+                cooldown = False
                 self.scroll_map("down")
+                if self.checking_end_of_scroll():
+                    break
         return False
 
     def check_attack_button_state(self, pos: Object_position) -> bool:
@@ -94,3 +95,37 @@ class MenuActions(BaseActions):
         if d_area > 1:
             return True
         return False
+
+    def checking_end_of_scroll(self) -> bool:
+        """
+        Проверяет появляется волна окончания прокрутки
+        :return: True если конец страницы
+        """
+        img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        min_hsv = np.array((1, 0, 160))
+        max_hsv = np.array((179, 30, 255))
+
+        masc = cv2.inRange(hsv, min_hsv, max_hsv)
+        moment = cv2.moments(masc, 1)
+        d_area = moment['m00']
+        print(d_area)
+        if d_area > 10_000:
+            return True
+        return False
+
+    def open_panel(self, template) -> bool:
+        ...
+
+    def take_loot(self):
+        img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        pos = self.finder.find_object(template=UI.loot_panel, img_gray=img_gray)
+        if pos:
+            if pos_close_panel := self.finder.find_in_object(img_gray=img_gray, y1=pos.y1, y2=pos.y2, template=UI.close_panel):
+                self.click_random_point_in_the_area(pos_close_panel, relative=True)
+
+            elif self.finder.find_in_object(img_gray=img_gray, y1=pos.y1, y2=pos.y2, template=UI.open_panel):
+                print("Открыто")
+

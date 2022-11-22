@@ -49,7 +49,7 @@ class BaseFinder:
             return img_gray[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
 
     @staticmethod
-    def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False):
+    def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False) -> Object_position:
 
         cut_img_gray = BaseFinder.cut_image(img_gray=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
 

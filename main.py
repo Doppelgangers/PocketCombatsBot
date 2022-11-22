@@ -19,19 +19,22 @@ def main_loop():
         monitor_manager.set_size_window(width=424, height=727)
 
     with mss.mss() as screenshot:
+
         menu = MenuActions(screenshot=screenshot, monitor_manager=monitor_manager)
         fighter_men = Fighter(monitor_manager, screenshot)
-        for i in range(3):
+        # menu.take_loot()
+        #
+        if menu.find_fight(Enemies.wolf, 5):
+            fighter_men.fight_list_skills([Skills.water_bolt, Skills.ice_vortex, Skills.kick, Skills.mind_power ])
 
-            if menu.find_fight(Enemies.wolf, 5):
-                fighter_men.fight_list_skills([Skills.kick])
+        print("END")
 
-            print("END")
+        exit()
 
 
 
 if __name__ == "__main__":
-
+        # print(Skills.__getattribute__())
         main_loop()
 
 

@@ -13,6 +13,7 @@ with mss.mss() as screenshot:
         img = np.asarray(screenshot.grab(monitor_manager.monitor))
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV )
         # thresh = cv2.inRange(hsv, np.array((1,0,0)), np.array((255,255,255)))
-        thresh = cv2.inRange(hsv, np.array((0,0,200)), np.array((0,0,220)))
+        thresh = cv2.inRange(hsv, np.array((1,0,160)), np.array((179,30,255)))
         cv2.imshow('image', thresh)
         cv2.waitKey(1)
+

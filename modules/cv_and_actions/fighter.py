@@ -30,7 +30,9 @@ class Fighter:
         fight_is_not_found - бой не был найден, возможно его не начали
         fight_is_end вы завершили сражение порожением или победой
         """
+        # TODO: Если во время атаки кнопка по какой то причине не прожаласть будет прожат моментально следующий навык
         if not self.actions.try_find_element(template=Skills.kick, wait=1):
+            print("fight_is_not_found")
             return "fight_is_not_found"
 
         self.open_skills(wait=1)
