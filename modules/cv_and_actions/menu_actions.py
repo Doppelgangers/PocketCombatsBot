@@ -66,8 +66,8 @@ class MenuActions(BaseActions):
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             atk = self.attack_the_enemy(enemy=enemy, img_gray=img_gray)
-            print(self.take_loot())
-            print(atk)
+            self.take_loot()
+
             if atk == "cooldown":
                 cooldown = True
             elif atk:
@@ -91,7 +91,6 @@ class MenuActions(BaseActions):
 
         moment = cv2.moments(masc, 1)
         d_area = moment['m00']
-        print(d_area)
         if d_area > 1:
             return True
         return False
@@ -109,7 +108,6 @@ class MenuActions(BaseActions):
         masc = cv2.inRange(hsv, min_hsv, max_hsv)
         moment = cv2.moments(masc, 1)
         d_area = moment['m00']
-        print(d_area)
         if d_area > 10_000:
             return True
         return False
@@ -117,15 +115,52 @@ class MenuActions(BaseActions):
     def open_panel(self, template) -> bool:
         ...
 
+    def __find_first_item_in_loot(self, position_loot_panel: Object_position) -> Object_position | None:
+        """
+        Ищет первый попавшейся текст ниже координат что переданы , и возвращает позицию текста
+        :param position_loot_panel:
+        :return: Object_position
+        """
+        img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
+        img = self.finder.cut_image(img, y1=position_loot_panel.y2)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+        # Получаем маску
+        thresh = cv2.inRange(hsv, np.array((0, 0, 0)), np.array((0, 0, 160)))
+
+        # Расширяем области
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (4, 4))
+        dilate = cv2.dilate(thresh, kernel, iterations=4)
+
+        "Получаем контуры "
+        cnts = cv2.findContours(dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+        if cnts:
+            area = cv2.contourArea(cnts[-1])
+            if 350 < area < 5000:
+                x, y, w, h = cv2.boundingRect(cnts[-1])
+                obp = Object_position(x,y+position_loot_panel.y2, x+w,y+h+position_loot_panel.y2)
+                obp.convert_position_local_to_global(self.monitor_manager)
+                return obp
+            return None
+
     def take_loot(self):
         img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        pos = self.finder.find_object(template=UI.loot_panel, img_gray=img_gray)
-        if pos:
-            if pos_close_panel := self.finder.find_in_object(img_gray=img_gray, y1=pos.y1, y2=pos.y2, template=UI.close_panel):
+        pos_loot_panel = self.finder.find_object(template=UI.loot_panel, img_gray=img_gray)
+
+        if pos_loot_panel:
+            if pos_close_panel := self.finder.find_in_object(img_gray=img_gray, y1=pos_loot_panel.y1, y2=pos_loot_panel.y2, template=UI.close_panel):
+                """
+                Если закрыто то открываем вкладку.
+                """
                 self.click_random_point_in_the_area(pos_close_panel, relative=True)
 
-            elif self.finder.find_in_object(img_gray=img_gray, y1=pos.y1, y2=pos.y2, template=UI.open_panel):
-                print("Открыто")
-
+            if self.finder.find_in_object(img_gray=img_gray, y1=pos_loot_panel.y1, y2=pos_loot_panel.y2, template=UI.open_panel):
+                """
+                Ескли вкладка открыта начинаем процесс сбора лута.
+                """
+                pos_loot = self.__find_first_item_in_loot(position_loot_panel=pos_loot_panel)
+                if pos_loot:
+                    self.click_random_point_in_the_area(pos_loot, offset=2, relative=False)
