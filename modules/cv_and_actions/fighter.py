@@ -113,17 +113,18 @@ class Fighter:
         return self.find_by_template_and_click_area(template=UI.end_fight, wait=wait)
 
     def open_skills(self, wait: float = 0.5):
-        return self.find_by_template_and_click_area(template=UI.skills_panel, wait=wait)
+        return self.find_by_template_and_click_area(template=UI.skills_panel, wait=wait, offset=5)
 
-    def find_by_template_and_click_area(self, template: Template, wait: float = 0.5) -> bool:
+    def find_by_template_and_click_area(self, template: Template, wait: float = 0.5, offset: int = 2) -> bool:
         """
         Ищет объект по шаблону и нажимает в случайную точку в его области
+        :param offset:
         :param template: шаблон
         :param wait: время поиска объекта
         :return: True or False , нажал на объект или нет.
         """
         if pos := self.actions.try_find_element(template=template, wait=wait):
             print(pos)
-            self.actions.click_random_point_in_the_area(pos, relative=True, offset=2)
+            self.actions.click_random_point_in_the_area(pos, relative=True, offset=offset)
             return True
         return False

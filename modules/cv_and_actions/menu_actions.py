@@ -164,3 +164,5 @@ class MenuActions(BaseActions):
                 pos_loot = self.__find_first_item_in_loot(position_loot_panel=pos_loot_panel)
                 if pos_loot:
                     self.click_random_point_in_the_area(pos_loot, offset=2, relative=False)
+
+                    #TODO сделать фунцию для поиска объекта и проверки его цвета
