@@ -17,7 +17,7 @@ class BaseActions:
         self.screenshot = screenshot
         self.finder = BaseFinder()
 
-    def click_to(self, x, y, click: bool = True, relative_your_screen: bool = False):
+    def click_to(self, x, y, click: bool = True, relative_your_screen: bool = False, duration_min: int = 31, duration_max: int = 83):
 
         if relative_your_screen:
             x += self.monitor_manager.monitor.get("left")
@@ -27,19 +27,21 @@ class BaseActions:
 
         if click:
             pag.mouseDown()
-            time.sleep(random.randrange(31, 83) / 1000)
+            time.sleep(random.randrange(duration_min, duration_max) / 1000)
             pag.mouseUp()
 
-    def click_random_point_in_the_area(self, position: Object_position, relative: bool = True, offset: int = 1):
+    def click_random_point_in_the_area(self, position: Object_position, relative: bool = True, offset: int = 1, duration_min: int = 31, duration_max: int = 83):
         """
         Нажимает на кнопку атака в случйном месте
+        :param duration_max:
+        :param duration_min:
         :param relative: Преобразует коордтинаты окна в координаты монитора
         :param offset: отступ в px во внутрь области
         :param position: координаты элемента
         """
         x = random.randint(position.x1+offset, position.x2-offset)
         y = random.randint(position.y1+offset, position.y2-offset)
-        self.click_to(x=x, y=y, relative_your_screen=relative)
+        self.click_to(x=x, y=y, relative_your_screen=relative, duration_min=duration_min, duration_max=duration_max)
 
     def try_find_element(self, template, wait: float = 1) -> Object_position | None:
         """

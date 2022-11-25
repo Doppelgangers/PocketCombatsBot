@@ -112,9 +112,6 @@ class MenuActions(BaseActions):
             return True
         return False
 
-    def open_panel(self, template) -> bool:
-        ...
-
     def __find_first_item_in_loot(self, position_loot_panel: Object_position) -> Object_position | None:
         """
         Ищет первый попавшейся текст ниже координат что переданы , и возвращает позицию текста
@@ -151,6 +148,7 @@ class MenuActions(BaseActions):
         pos_loot_panel = self.finder.find_object(template=UI.loot_panel, img_gray=img_gray)
 
         if pos_loot_panel:
+
             if pos_close_panel := self.finder.find_in_object(img_gray=img_gray, y1=pos_loot_panel.y1, y2=pos_loot_panel.y2, template=UI.close_panel):
                 """
                 Если закрыто то открываем вкладку.
@@ -161,8 +159,31 @@ class MenuActions(BaseActions):
                 """
                 Ескли вкладка открыта начинаем процесс сбора лута.
                 """
-                pos_loot = self.__find_first_item_in_loot(position_loot_panel=pos_loot_panel)
-                if pos_loot:
-                    self.click_random_point_in_the_area(pos_loot, offset=2, relative=False)
+                while True:
+                    pos_loot = self.__find_first_item_in_loot(position_loot_panel=pos_loot_panel)
+                    if pos_loot:
+                        self.click_random_point_in_the_area(pos_loot, offset=2, relative=False, duration_min=60, duration_max=100 )
 
-                    #TODO сделать фунцию для поиска объекта и проверки его цвета
+                        time.sleep(0.15)
+
+                        img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
+                        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                        hsv_min, hsv_max = (1, 70, 192), (23, 72, 194)
+
+                        if pos_pick_up := self.finder.find_object(template=UI.pick_up, img_gray=img_gray):
+
+                            img = self.finder.cut_image(img_gray=img, object_position=pos_pick_up)
+                            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+                            masc = cv2.inRange(hsv, hsv_min, hsv_max)
+                            moment = cv2.moments(masc, 1)
+                            d_area = moment['m00']
+
+                            if d_area > 1:
+                                return pos_pick_up
+                        else:
+                            self.scroll_map(scroll_to="down")
+                            if not self.finder.find_object(template=UI.pick_up, img_gray=img_gray):
+                                break
+                    else:
+                        break
+
