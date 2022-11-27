@@ -1,15 +1,10 @@
-import random
-import time
-
-import ahk
-import cv2
 import mss
 
-
-from modules.cv_and_actions import MenuActions
+from modules.actions.menu_actions import MenuActions
 from modules.configs.settings import *
-from modules.cv_and_actions.fighter import *
-from modules.data_classes.templates import Enemies
+from modules.data_classes.templates import Enemies, Skills
+from modules.fighter import Fighter
+from modules.window_manager import Window_manager
 
 
 def main_loop():

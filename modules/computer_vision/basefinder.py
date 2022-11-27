@@ -1,5 +1,3 @@
-import time
-
 import cv2
 import numpy as np
 from ..data_classes.templates import *
@@ -19,7 +17,6 @@ class BaseFinder:
         :return: координаты обекта или ничего
         """
 
-        position_find_object = {}
         width_template, height_template = template.img.shape[::-1]
 
         result = cv2.matchTemplate(img_gray, template.img, method)

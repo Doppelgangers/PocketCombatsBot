@@ -4,12 +4,12 @@ import mss
 import cv2
 import numpy as np
 
-from .window_manager import Window_manager
-from .basefinder import BaseFinder
+from ..window_manager import Window_manager
+from ..computer_vision import BaseFinder
 from ..data_classes.templates import Skills, UI, Template_Skills, Template_UI, Template_Enemy, Template
-from .baseactions import BaseActions
+from ..actions import BaseActions
 from ..data_classes.data_classes import Object_position
-from .mouse_control import Mouse_control
+from ..actions import Mouse_control
 
 
 class Fighter:

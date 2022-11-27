@@ -1,7 +1,7 @@
 from typing import Self
 
 from dataclasses import dataclass
-from modules.cv_and_actions.window_manager import Window_manager
+from modules.window_manager import Window_manager
 
 
 @dataclass

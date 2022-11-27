@@ -3,7 +3,7 @@ import time
 import random
 
 from modules.data_classes.data_classes import Object_position
-from modules.cv_and_actions.window_manager import Window_manager
+from modules.window_manager import Window_manager
 
 
 class Mouse_control:

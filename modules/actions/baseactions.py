@@ -5,9 +5,9 @@ import numpy as np
 import pyautogui as pag
 
 from ..data_classes.data_classes import Object_position
-from .basefinder import BaseFinder
+from ..computer_vision import BaseFinder
 from ..data_classes.templates import *
-from .window_manager import Window_manager
+from ..window_manager import Window_manager
 
 
 class BaseActions:

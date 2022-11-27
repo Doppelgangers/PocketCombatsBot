@@ -5,7 +5,7 @@ import numpy as np
 from .baseactions import BaseActions
 from ..data_classes.data_classes import Object_position
 from ..data_classes.templates import *
-from .basefinder import BaseFinder
+from ..computer_vision.basefinder import BaseFinder
 from .mouse_control import Mouse_control
 
 
