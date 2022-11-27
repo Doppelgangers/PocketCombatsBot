@@ -4,6 +4,7 @@ import mss
 import cv2
 import numpy as np
 
+from ..image_controller.image_controller import Image_controller
 from ..window_manager import Window_manager
 from ..computer_vision import BaseFinder
 from ..data_classes.templates import Skills, UI, Template_Skills, Template_UI, Template_Enemy, Template
@@ -64,20 +65,14 @@ class Fighter:
         """
 
         if position_btn_attack := self.find_btn_attack(wait=wait):
-
             img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
 
             #Получаем фрагмент с изображением кнопки атаки
-            img_btn_fight = self.finder.cut_image_by_obj_pos(img, object_position=position_btn_attack)
+            img_btn_fight = Image_controller.cut_image_by_obj_pos(img, object_position=position_btn_attack)
 
-            hsv = cv2.cvtColor(img_btn_fight, cv2.COLOR_BGR2HSV)
+            number_true_colors = Image_controller.check_number_of_colors(img, (0, 0, 214), (0, 0, 225))
 
-            hsv_min = np.array((0, 0, 214))
-            hsv_max = np.array((0, 0, 225))
-            masc = cv2.inRange(hsv, hsv_min, hsv_max)
-            moment = cv2.moments(masc, 1)
-            d_area = moment['m00']
-            if d_area > 1000:
+            if number_true_colors > 1000:
                 print("Ход не доступен")
                 return False, position_btn_attack
             else:

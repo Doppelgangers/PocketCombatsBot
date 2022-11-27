@@ -1,8 +1,6 @@
 import time
-import random
-
 import numpy as np
-import pyautogui as pag
+
 
 from ..data_classes.data_classes import Object_position
 from ..computer_vision import BaseFinder
@@ -34,7 +32,6 @@ class BaseActions:
                 return pos
         else:
             return None
-
 
 
 

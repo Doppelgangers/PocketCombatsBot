@@ -1,1 +1,0 @@
-from .fighter import *

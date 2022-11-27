@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from ..data_classes.templates import *
 from ..data_classes.data_classes import Object_position
+from ..image_controller.image_controller import Image_controller
 
 
 class BaseFinder:
@@ -39,14 +40,6 @@ class BaseFinder:
             return None
 
     @staticmethod
-    def cut_image_by_coordinates(img, x1=None, x2=None, y1=None, y2=None):
-        return img[y1:y2, x1:x2]
-
-    @staticmethod
-    def cut_image_by_obj_pos(img, object_position: Object_position = None):
-        return img[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
-
-    @staticmethod
     def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False) -> Object_position:
         """
         Ищет обект в указанных дипаозонах.
@@ -60,7 +53,7 @@ class BaseFinder:
         :return: Координаты найденного объекта
         """
         #Обрезаем огбласть видемости
-        cut_img_gray = BaseFinder.cut_image_by_coordinates(img=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
+        cut_img_gray = Image_controller.cut_image_by_coordinates(img=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
         # Ищем в этой области изображение
         local_position = BaseFinder.find_object(template=template, img_gray=cut_img_gray,
                                                 draw_rect_in_gray_img=draw_rect_in_gray_img)

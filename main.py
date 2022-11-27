@@ -3,7 +3,7 @@ import mss
 from modules.actions.menu_actions import MenuActions
 from modules.configs.settings import *
 from modules.data_classes.templates import Enemies, Skills
-from modules.fighter import Fighter
+from modules.actions.fighter import Fighter
 from modules.window_manager import Window_manager
 
 
@@ -24,5 +24,3 @@ def main_loop():
 
 if __name__ == "__main__":
         main_loop()
-
-
