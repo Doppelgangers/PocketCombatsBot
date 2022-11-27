@@ -9,6 +9,7 @@ from .basefinder import BaseFinder
 from ..data_classes.templates import Skills, UI, Template_Skills, Template_UI, Template_Enemy, Template
 from .baseactions import BaseActions
 from ..data_classes.data_classes import Object_position
+from .mouse_control import Mouse_control
 
 
 class Fighter:
@@ -67,7 +68,7 @@ class Fighter:
             img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
 
             #Получаем фрагмент с изображением кнопки атаки
-            img_btn_fight = self.finder.cut_image(img, object_position=position_btn_attack)
+            img_btn_fight = self.finder.cut_image_by_obj_pos(img, object_position=position_btn_attack)
 
             hsv = cv2.cvtColor(img_btn_fight, cv2.COLOR_BGR2HSV)
 
@@ -125,6 +126,6 @@ class Fighter:
         """
         if pos := self.actions.try_find_element(template=template, wait=wait):
             print(pos)
-            self.actions.click_random_point_in_the_area(pos, relative=True, offset=offset)
+            Mouse_control.click_random_point_in_the_area(pos, monitor_manager=self.monitor_manager, offset=offset)
             return True
         return False

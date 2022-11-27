@@ -6,6 +6,7 @@ from .baseactions import BaseActions
 from ..data_classes.data_classes import Object_position
 from ..data_classes.templates import *
 from .basefinder import BaseFinder
+from .mouse_control import Mouse_control
 
 
 class MenuActions(BaseActions):
@@ -13,7 +14,7 @@ class MenuActions(BaseActions):
     def __init__(self, monitor_manager, screenshot):
         super().__init__(monitor_manager=monitor_manager, screenshot=screenshot)
         self.SCROLL_AREA = Object_position(x1=202, y1=318, x2=379, y2=642)
-        self.SCROLL_AREA.convert_position_local_to_global(monitor_manager)
+        self.SCROLL_AREA.convert_position_to_global(monitor_manager)
 
     def attack_the_enemy(self, enemy: Template_Enemy, img_gray) -> bool | str:
         """
@@ -26,7 +27,7 @@ class MenuActions(BaseActions):
         """
         if position_btn_attack := self.find_the_enemy_and_get_position_btn_attack(img_gray=img_gray, enemy=enemy):
             if self.check_attack_button_state(position_btn_attack):
-                self.click_random_point_in_the_area(position_btn_attack, relative=True)
+                Mouse_control.click_random_point_in_the_area(position_btn_attack, monitor_manager=self.monitor_manager)
                 return True
             else:
                 return "cooldown"
@@ -55,7 +56,7 @@ class MenuActions(BaseActions):
         return None
 
     def scroll_map(self, scroll_to):
-        self.scrolling_mouse_for_area(area=self.SCROLL_AREA, scroll_to=scroll_to, speed=0.18)
+        Mouse_control.scrolling_mouse_for_area(area=self.SCROLL_AREA, scroll_to=scroll_to, speed=0.18)
 
     def find_fight(self, enemy: Template_Enemy, wait: int) -> bool:
         start_time = time.perf_counter()
@@ -81,7 +82,7 @@ class MenuActions(BaseActions):
 
     def check_attack_button_state(self, pos: Object_position) -> bool:
         img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
-        img = self.finder.cut_image(img, object_position=pos)
+        img = self.finder.cut_image_by_obj_pos(img, object_position=pos)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         hsv_min = np.array((0, 0, 200))
@@ -119,7 +120,7 @@ class MenuActions(BaseActions):
         :return: Object_position
         """
         img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
-        img = self.finder.cut_image(img, y1=position_loot_panel.y2)
+        img = self.finder.cut_image_by_coordinates(img, y1=position_loot_panel.y2)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         # Получаем маску
@@ -136,8 +137,8 @@ class MenuActions(BaseActions):
             area = cv2.contourArea(cnts[-1])
             if 350 < area < 5000:
                 x, y, w, h = cv2.boundingRect(cnts[-1])
-                obp = Object_position(x,y+position_loot_panel.y2, x+w,y+h+position_loot_panel.y2)
-                obp.convert_position_local_to_global(self.monitor_manager)
+                obp = Object_position(x, y+position_loot_panel.y2, x+w, y+h+position_loot_panel.y2)
+                obp.convert_position_to_global(self.monitor_manager)
                 return obp
             return None
 
@@ -153,7 +154,7 @@ class MenuActions(BaseActions):
                 """
                 Если закрыто то открываем вкладку.
                 """
-                self.click_random_point_in_the_area(pos_close_panel, relative=True)
+                Mouse_control.click_random_point_in_the_area(pos_close_panel, monitor_manager=self.monitor_manager)
 
             if self.finder.find_in_object(img_gray=img_gray, y1=pos_loot_panel.y1, y2=pos_loot_panel.y2, template=UI.open_panel):
                 """
@@ -162,7 +163,7 @@ class MenuActions(BaseActions):
                 while True:
                     pos_loot = self.__find_first_item_in_loot(position_loot_panel=pos_loot_panel)
                     if pos_loot:
-                        self.click_random_point_in_the_area(pos_loot, offset=2, relative=False, duration_min=60, duration_max=100 )
+                        Mouse_control.click_random_point_in_the_area(pos_loot, monitor_manager=self.monitor_manager, offset=2, duration_min=60, duration_max=100)
 
                         time.sleep(0.15)
 
@@ -172,7 +173,7 @@ class MenuActions(BaseActions):
 
                         if pos_pick_up := self.finder.find_object(template=UI.pick_up, img_gray=img_gray):
 
-                            img = self.finder.cut_image(img_gray=img, object_position=pos_pick_up)
+                            img = self.finder.cut_image(img=img, object_position=pos_pick_up)
                             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
                             masc = cv2.inRange(hsv, hsv_min, hsv_max)
                             moment = cv2.moments(masc, 1)
@@ -186,4 +187,3 @@ class MenuActions(BaseActions):
                                 break
                     else:
                         break
-

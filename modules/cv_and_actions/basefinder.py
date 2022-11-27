@@ -9,7 +9,7 @@ from ..data_classes.data_classes import Object_position
 class BaseFinder:
 
     @staticmethod
-    def find_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
+    def find_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False) -> Object_position | None:
         """
         Ищет на скиншоте объект по шаблону
         :param template: Шаблон по которому будем искать
@@ -37,27 +37,37 @@ class BaseFinder:
                 x2=pt[0] + width_template,
                 y2=pt[1] + height_template
             )
-            break
-
-        return position_find_object
+            return position_find_object
+        else:
+            return None
 
     @staticmethod
-    def cut_image(img_gray, x1=None, x2=None, y1=None, y2=None, object_position: Object_position = None):
-        if x1 or x2 or y1 or y1:
-            return img_gray[y1:y2, x1:x2]
-        if object_position:
-            return img_gray[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
+    def cut_image_by_coordinates(img, x1=None, x2=None, y1=None, y2=None):
+        return img[y1:y2, x1:x2]
+
+    @staticmethod
+    def cut_image_by_obj_pos(img, object_position: Object_position = None):
+        return img[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
 
     @staticmethod
     def find_in_object(template, img_gray, x1=None, x2=None, y1=None, y2=None, draw_rect_in_gray_img: bool = False) -> Object_position:
-
-        cut_img_gray = BaseFinder.cut_image(img_gray=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
-
+        """
+        Ищет обект в указанных дипаозонах.
+        :param template: Изображение шаблон.
+        :param img_gray: Изображение в котором будем искать шаблон.
+        :param x1:
+        :param x2:
+        :param y1:
+        :param y2:
+        :param draw_rect_in_gray_img: Рисовать квадрат вокруг этого объекта.
+        :return: Координаты найденного объекта
+        """
+        #Обрезаем огбласть видемости
+        cut_img_gray = BaseFinder.cut_image_by_coordinates(img=img_gray, x1=x1, x2=x2, y1=y1, y2=y2)
+        # Ищем в этой области изображение
         local_position = BaseFinder.find_object(template=template, img_gray=cut_img_gray,
                                                 draw_rect_in_gray_img=draw_rect_in_gray_img)
-
-        #TODO: Кажется тут могут быть ошибки с вычислениями если обрезать не только по координуте y,
-        # в плене координаты будут считаться не правильно
+        # Добавляем координаты которые забрали обратно
         if local_position:
             if y1:
                 local_position.y1 += y1
@@ -70,6 +80,14 @@ class BaseFinder:
             return local_position
 
     @staticmethod
-    def find_and_cut_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED, draw_rect_in_gray_img: bool = False):
+    def find_and_cut_object(template: Template, img_gray, method=cv2.TM_CCOEFF_NORMED):
+        """
+        Ищит изображение по шаблону и возвращает его.
+
+        :param template: Изображение шаблон
+        :param img_gray: Изображение на котором бужем искать шаблон
+        :param method: Способ сравнения изображений
+        :return: Возвращает найденное изображение
+        """
         if position := BaseFinder.find_object(template=template, img_gray=img_gray, method=method):
-            return BaseFinder.cut_image(img_gray=img_gray, x1=position.x1, x2=position.x2, y1=position.y1, y2=position.y2)
+            return BaseFinder.cut_image_by_obj_pos(img=img_gray, object_position=position)
