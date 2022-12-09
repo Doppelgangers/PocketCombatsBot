@@ -1,6 +1,8 @@
+import time
+
 import cv2
 import numpy as np
-
+from modules.window import Window
 from modules.data_classes import Object_position, Template
 from modules.image.image_actions import Image_actions
 
@@ -84,3 +86,27 @@ class Base_finder:
         if position := cls.find_object(template=template, img_gray=img_gray, method=method):
             return Image_actions.cut_image_by_obj_pos(img=img_gray, object_position=position)
 
+
+class Iteration_finder(Base_finder):
+
+    def __init__(self, monitor_manager: Window, screenshot):
+        self.monitor_manager = monitor_manager
+        self.screenshot = screenshot
+
+    def try_find_element(self, template, wait: float = 1) -> Object_position | None:
+        """
+        Попытка найти объект
+        :param wait: количество секунд поиска
+        :param template: Шаблон искомого объкта
+        :return: позиция объекта или None
+        """
+        start_time = time.perf_counter()
+
+        while time.perf_counter()-start_time < wait:
+            img = np.asarray(self.screenshot.grab(self.monitor_manager.monitor))
+            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+            if pos := self.find_object(template=template, img_gray=img_gray):
+                return pos
+        else:
+            return None

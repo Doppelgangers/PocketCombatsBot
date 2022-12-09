@@ -19,11 +19,11 @@ class Window:
         self.__ahk = AHK()
         self.window_name: str = window_name
         self.__get_window_by_name()
-        self.window_name = self.__window.get_title()
+        self.window_name = self.__window.title.decode("utf-8")
         self.__window.activate()
         self.update()
         self.__validation_window()
-        self.__logger.info(f"Окно {self.window_name} инициализированно.")
+        self.__logger.info(f"""Окно "{self.window_name}" инициализированно.""")
 
     def __get_window_by_name(self):
         """
@@ -52,6 +52,10 @@ class Window:
           width  = {self.width}
           height = {self.height}
         """)
+
+    @property
+    def monitor(self):
+        return {"left": self.left, "top": self.top, "width": self.width, "height": self.height}
 
     def __validation_window(self):
         """
@@ -100,4 +104,4 @@ class Window:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     bls = Window("Без")
-    bls.set_size_window()
+    print(bls.monitor)
