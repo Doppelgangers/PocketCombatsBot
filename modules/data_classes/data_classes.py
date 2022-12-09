@@ -1,16 +1,15 @@
-from typing import Self
-
 from dataclasses import dataclass
-from modules.window_manager import Window_manager
+from modules.window import Window
+
+from modules.window import Window
 
 
 @dataclass
-class Object_position:
+class Base_object_position:
     x1: int  # Лево вверх, координаты X
     y1: int  # Лево вверх, координаты Y
     x2: int  # Право низ, координаты X
     y2: int  # Право низ, координаты Y
-    is_global_position: bool = False
 
     def height(self) -> int:
         return self.y2 - self.y1
@@ -58,44 +57,45 @@ class Object_position:
                 raise KeyError("Аргумент " + corner + " не предусмотрен.")
         return [x, y]
 
-    def convert_position_to_global(self, monitor_manager: Window_manager) -> Self:
+
+@dataclass
+class Object_position(Base_object_position):
+    is_global_position: bool = False
+
+    def convert_position_to_global(self, window: Window):
         """
         Приимсает Object_position модифицирует его и возвращает
         координаты относитиельо монитора для дальнейшего использования
         например для клика по элементу
-        :param monitor_manager:
-        :param position: Объект класса Object_position
-
         """
         if not self.is_global_position:
             self.is_global_position = True
-            left = monitor_manager.left
-            top = monitor_manager.top
+            left = window.left
+            top = window.top
             self.y1 += top
             self.y2 += top
             self.x1 += left
             self.x2 += left
         return self
 
-    def convert_position_to_local(self, monitor_manager: Window_manager) -> Self:
+    def convert_position_to_local(self, window: Window):
         """
         Приимсает Object_position модифицирует его и возвращает
         координаты относитиельо монитора для дальнейшего использования
         например для клика по элементу
-        :param monitor_manager:
         """
         if self.is_global_position:
             self.is_global_position = False
-            left = monitor_manager.left
-            top = monitor_manager.top
+            left = window.left
+            top = window.top
             self.y1 -= top
             self.y2 -= top
             self.x1 -= left
             self.x2 -= left
         return self
 
-    def switch_position_global_or_local(self, monitor_manager: Window_manager) -> Self:
+    def switch_position_global_or_local(self, window: Window):
         if self.is_global_position:
-            return self.convert_position_to_local(monitor_manager)
+            return self.convert_position_to_local(window)
         else:
-            return self.convert_position_to_global(monitor_manager)
+            return self.convert_position_to_global(window)

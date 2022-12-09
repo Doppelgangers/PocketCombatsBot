@@ -1,9 +1,10 @@
 import json
 import os
+
 import cv2
 import numpy
 
-from modules.configs.settings import TEMPLATES_DIR
+from settings import TEMPLATES_DIR
 
 
 class Template:

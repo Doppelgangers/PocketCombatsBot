@@ -1,8 +1,7 @@
 import os
-import pathlib
 
 """PATHS"""
-BASE_DIR = pathlib.WindowsPath(os.path.dirname(os.path.abspath(__file__))).parents[1]
+BASE_DIR = os.getcwd()
 TEMPLATES_DIR = os.path.join(BASE_DIR, "assets", "Templates")
 
 

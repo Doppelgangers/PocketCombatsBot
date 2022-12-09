@@ -2,19 +2,16 @@ import pyautogui as pag
 import time
 import random
 
-from modules.data_classes.data_classes import Object_position
-from modules.window_manager import Window_manager
 
-
-class Mouse_control:
+class Mouse:
 
     @staticmethod
-    def click_to(x, y, click: bool = True, relative_your_screen: bool = False, duration_min: int = 38, duration_max: int = 93):
+    def click_to(x, y, click: bool = True, relative_your_screen: bool = False, duration: list[int, int] = (38, 93)):
         pag.moveTo(x, y)
 
         if click:
             pag.mouseDown()
-            time.sleep(random.randrange(duration_min, duration_max) / 1000)
+            time.sleep(random.randrange(start=duration[0], stop=duration[1]) / 1000)
             pag.mouseUp()
 
     @staticmethod
@@ -27,7 +24,7 @@ class Mouse_control:
         :param duration_max:
         :param duration_min:
         """
-        position.convert_position_to_global(monitor_manager=monitor_manager)
+        position.convert_position_to_global(window=monitor_manager)
         x = random.randint(position.x1+offset, position.x2-offset)
         y = random.randint(position.y1+offset, position.y2-offset)
         Mouse_control.click_to(x=x, y=y, duration_min=duration_min, duration_max=duration_max)
