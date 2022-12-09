@@ -19,8 +19,8 @@ class Window:
         self.__ahk = AHK()
         self.window_name: str = window_name
         self.__get_window_by_name()
+        self.window_name = self.__window.get_title()
         self.__window.activate()
-
         self.update()
         self.__validation_window()
         self.__logger.info(f"Окно {self.window_name} инициализированно.")
