@@ -19,6 +19,25 @@ class Fighter(Actions):
         super(Fighter, self).__init__(monitor_manager=monitor_manager, screenshot=screenshot)
         self.__logger = logging.getLogger(__name__)
 
+    def fight_skills_of_list(self, skills):
+        pass
+
+    def fight_available_skills(self):
+        pass
+
+    def fight_kick(self):
+        move = -1
+        while True:
+            if isinstance(pos_btn_atk := self.wait_move(40), Object_position):
+                Mouse.click_random_point_in_the_area(pos_btn_atk, monitor_manager=self.monitor_manager, offset=4)
+                time.sleep(0.2)
+                move += 1
+            elif pos_btn_atk:
+                print(f"Сражение завершенно за {move} ходов")
+                return ["fight_is_end"]
+            else:
+                return ["ERROR"]
+
     def find_btn_atk(self, wait: float = 1) -> Object_position | None:
         if pos := self.finder.try_find_element(template=Skills.kick, wait=wait):
             self.__logger.debug(f"Кнопка атаки найденна, {pos}")

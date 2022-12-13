@@ -2,6 +2,7 @@ import random
 
 import mss
 
+from modules.data_classes import UI
 from modules.fighter.fighter import Fighter
 from modules.window import Window
 from modules.telegram_bot import TelegramBot
@@ -20,8 +21,8 @@ def main():
 
     fighter = Fighter(monitor_manager=monitor_manager, screenshot=screenshot)
 
-    while True:
-        fighter.wait_move(10)
+    fighter.fight_kick()
+
 
 
 if __name__ == "__main__":

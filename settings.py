@@ -1,7 +1,7 @@
 import os
 
 """PATHS"""
-BASE_DIR = os.getcwd()
+BASE_DIR = "D:\dev\PocketCombatsBot"
 TEMPLATES_DIR = os.path.join(BASE_DIR, "assets", "Templates")
 
 
