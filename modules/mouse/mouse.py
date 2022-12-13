@@ -2,6 +2,9 @@ import pyautogui as pag
 import time
 import random
 
+from modules.data_classes import Object_position
+from modules.window import Window
+
 
 class Mouse:
 
@@ -14,8 +17,8 @@ class Mouse:
             time.sleep(random.randrange(start=duration[0], stop=duration[1]) / 1000)
             pag.mouseUp()
 
-    @staticmethod
-    def click_random_point_in_the_area(position: Object_position, monitor_manager: Window_manager, offset: int = 1, duration_min: int = 31, duration_max: int = 83):
+    @classmethod
+    def click_random_point_in_the_area(cls, position: Object_position, monitor_manager: Window, offset: int = 1, duration_min: int = 31, duration_max: int = 83):
         """
         Нажимает на кнопку атака в случйном месте объекта
         :param monitor_manager:
@@ -27,7 +30,7 @@ class Mouse:
         position.convert_position_to_global(window=monitor_manager)
         x = random.randint(position.x1+offset, position.x2-offset)
         y = random.randint(position.y1+offset, position.y2-offset)
-        Mouse_control.click_to(x=x, y=y, duration_min=duration_min, duration_max=duration_max)
+        cls.click_to(x=x, y=y, duration=[duration_min, duration_max])
 
     @staticmethod
     def scrolling_mouse(x1: int, y1: int, x2: int, y2: int, speed: float = 0.16):
@@ -37,7 +40,7 @@ class Mouse:
         :param y1: Начальная координата по оси y
         :param y2: Конечная координата по оси x
         :param x2: Конечная координата по оси y
-        :param speed: Скорость прокрутки (в секундаж) >= 0.2 sec
+        :param speed: Скорость прокрутки (в секундах) >= 0.2 sec
         :return: None
         """
         pag.moveTo(x1, y1)
@@ -46,8 +49,8 @@ class Mouse:
         pag.moveTo(x2, y2, speed)
         pag.mouseUp()
 
-    @staticmethod
-    def scrolling_mouse_for_area(area: Object_position, scroll_to: str = "down", speed: float = 0.16):
+    @classmethod
+    def scrolling_mouse_for_area(cls, area: Object_position, scroll_to: str = "down", speed: float = 0.16):
         """
 
         :param area: облать по которой будем скорллить
@@ -56,7 +59,7 @@ class Mouse:
         """
         #TODO Координаты выбираются весьма странно , переделать!
         start_x = random.randint(area.min_x(), area.max_x()-20) #случайная область по координате X
-        start_y = random.randint(area.max_y()-20, area.max_y()) # нижняя область с погрешностью 20px вверх
+        start_y = random.randint(area.max_y()-20, area.max_y())# нижняя область с погрешностью 20px вверх
 
         end_x = start_x
         end_y = random.randint(area.min_y(), area.min_y() + 20)
@@ -69,4 +72,5 @@ class Mouse:
                 pass
             case _:
                 raise KeyError("Аргумент " + scroll_to + " не предусмотрен.")
-        Mouse_control.scrolling_mouse(x1=start_x, y1=start_y, x2=end_x, y2=end_y, speed=speed)
+
+        cls.scrolling_mouse(x1=start_x, y1=start_y, x2=end_x, y2=end_y, speed=speed)

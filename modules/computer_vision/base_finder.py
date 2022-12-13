@@ -87,13 +87,13 @@ class Base_finder:
             return Image_actions.cut_image_by_obj_pos(img=img_gray, object_position=position)
 
 
-class Iteration_finder(Base_finder):
+class Finder(Base_finder):
 
     def __init__(self, monitor_manager: Window, screenshot):
         self.monitor_manager = monitor_manager
         self.screenshot = screenshot
 
-    def try_find_element(self, template, wait: float = 1) -> Object_position | None:
+    def try_find_element(self, template: Template, wait: float = 1) -> Object_position | None:
         """
         Попытка найти объект
         :param wait: количество секунд поиска
@@ -110,3 +110,6 @@ class Iteration_finder(Base_finder):
                 return pos
         else:
             return None
+
+
+

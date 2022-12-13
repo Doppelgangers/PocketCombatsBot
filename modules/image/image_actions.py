@@ -15,8 +15,8 @@ class Image_actions:
         return img[object_position.y1:object_position.y2, object_position.x1:object_position.x2]
 
     @staticmethod
-    def check_number_of_colors(img, hsv_min: tuple[int, int, int] | np.ndarray, hsv_max: tuple[int, int, int] | np.ndarray):
-        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    def check_number_of_colors(img_bgr, hsv_min: tuple[int, int, int] | np.ndarray, hsv_max: tuple[int, int, int] | np.ndarray):
+        hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
         masc = cv2.inRange(hsv, hsv_min, hsv_max)
         moment = cv2.moments(masc, 1)
         return moment['m00']

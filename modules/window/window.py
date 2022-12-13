@@ -15,7 +15,7 @@ class Window:
     height: int = 0
 
     def __init__(self, window_name):
-        self.__logger = logging.getLogger("monitor")
+        self.__logger = logging.getLogger(__name__)
         self.__ahk = AHK()
         self.window_name: str = window_name
         self.__get_window_by_name()
@@ -54,7 +54,7 @@ class Window:
         """)
 
     @property
-    def monitor(self):
+    def monitor(self) -> dict:
         return {"left": self.left, "top": self.top, "width": self.width, "height": self.height}
 
     def __validation_window(self):
